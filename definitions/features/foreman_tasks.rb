@@ -19,4 +19,9 @@ class Features::ForemanTasks < ForemanMaintain::Feature
     # SQL
     5
   end
+
+  def invalid_tasks_count
+    require 'pry'; binding.pry
+    1
+  end
 end
