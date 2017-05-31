@@ -3,8 +3,12 @@ module ForemanMaintain
     class Base < Clamp::Command
       include Concerns::Finders
 
-      def dashize(string)
+      def self.dashize(string)
         string.to_s.tr('_', '-')
+      end
+
+      def dashize(string)
+        self.class.dashize(string)
       end
 
       def underscorize(string)
