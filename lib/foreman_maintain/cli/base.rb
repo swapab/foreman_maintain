@@ -39,8 +39,14 @@ module ForemanMaintain
         ForemanMaintain.available_checks(filter)
       end
 
+      def available_procedures
+        filter = {}
+        filter[:tags] = tags if respond_to?(:tags)
+        ForemanMaintain.available_procedures(filter)
+      end
+
       def available_tags(collection)
-        collection.inject([]) { |array, check| array.concat(check.tags).uniq }.sort_by(&:to_s)
+        collection.inject([]) { |array, item| array.concat(item.tags).uniq }.sort_by(&:to_s)
       end
 
       def self.label_option
