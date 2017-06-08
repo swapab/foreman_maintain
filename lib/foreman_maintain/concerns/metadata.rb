@@ -144,7 +144,6 @@ module ForemanMaintain
           metadata[:description] || to_s
         end
 
-
         def tags
           metadata[:tags]
         end
@@ -236,7 +235,7 @@ module ForemanMaintain
       end
 
       def runtime_message
-        description + (params.empty? ? '' : " (#{params.to_s})")
+        description + (params.empty? ? '' : " (#{params})")
       end
 
       def tags

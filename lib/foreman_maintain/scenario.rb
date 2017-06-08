@@ -17,8 +17,8 @@ module ForemanMaintain
         @filter_label = filter[:label]
         @definition_kinds = definition_kinds
         @steps = []
-        @steps += ForemanMaintain.available_checks(filter).map(&:ensure_instance) if definition_kinds.include?(:check)
-        @steps += ForemanMaintain.available_procedures(filter).map(&:ensure_instance) if definition_kinds.include?(:procedure)
+        @steps += checks(filter) if definition_kinds.include?(:check)
+        @steps += procedures(filter) if definition_kinds.include?(:procedure)
         @steps = DependencyGraph.sort(@steps)
       end
 
@@ -37,7 +37,7 @@ module ForemanMaintain
       end
 
       def kind_list
-        @definition_kinds.map { |kind| kind.to_s }.join(' or ')
+        @definition_kinds.map(&:to_s).join(' or ')
       end
 
       def tag_string(tags)
@@ -46,6 +46,14 @@ module ForemanMaintain
 
       def dashize(string)
         string.to_s.tr('_', '-')
+      end
+
+      def checks(filter)
+        ForemanMaintain.available_checks(filter).map(&:ensure_instance)
+      end
+
+      def procedures(filter)
+        ForemanMaintain.available_procedures(filter).map(&:ensure_instance)
       end
     end
 

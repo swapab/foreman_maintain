@@ -11,13 +11,10 @@ module ForemanMaintain
           run_scenario(scenario)
         end
 
-        # transform clamp optoins into procedure params
+        # transform clamp options into procedure params
         def options_to_params
           self.class.recognised_options.inject({}) do |par, option|
-            if !option.switches.include?('--help') && !option.switches.include?('--assumeyes')
-              param = option.switches.first[2..-1].to_sym
-              par[param] = send(option.read_method)
-            end
+            par[option_sym(option)] = send(option.read_method) if metadata_option?(option)
             par
           end
         end
@@ -25,11 +22,29 @@ module ForemanMaintain
         def self.params_to_options(params)
           params.values.each do |param|
             options = {}
-            options[:required] = param.required? unless param.flag? # clamp doesnt allow required flags
+            # clamp doesnt allow required flags
+            options[:required] = param.required? unless param.flag?
             options[:multivalued] = param.array?
-            option_var = param.flag? ? :flag : param.name.to_s.upcase
-            option('--' + dashize(param.name.to_s), option_var, param.description, options)
+            option(option_name(param), option_var(param), param.description, options)
           end
+        end
+
+        def self.option_name(param)
+          ['--' + dashize(param.name.to_s)]
+        end
+
+        def self.option_var(param)
+          param.flag? ? :flag : param.name.to_s.upcase
+        end
+
+        private
+
+        def option_sym(option)
+          option.switches.first[2..-1].to_sym
+        end
+
+        def metadata_option?(option)
+          !option.switches.include?('--help') && !option.switches.include?('--assumeyes')
         end
       end
     end
