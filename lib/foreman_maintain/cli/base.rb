@@ -46,6 +46,10 @@ module ForemanMaintain
       end
 
       def available_tags(collection)
+        self.class.available_tags(collection)
+      end
+
+      def self.available_tags(collection)
         collection.inject([]) { |array, item| array.concat(item.tags).uniq }.sort_by(&:to_s)
       end
 

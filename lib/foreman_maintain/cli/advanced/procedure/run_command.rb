@@ -1,4 +1,4 @@
-require 'foreman_maintain/cli/procedure/abstract_procedure_command'
+require 'foreman_maintain/cli/advanced/procedure/abstract_procedure_command'
 
 module ForemanMaintain
   module Cli
