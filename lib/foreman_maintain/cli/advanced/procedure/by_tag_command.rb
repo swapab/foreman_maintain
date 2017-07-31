@@ -12,7 +12,17 @@ module ForemanMaintain
           procedures = ForemanMaintain.available_procedures(:tags => tag).map do |procedure|
             procedure.label.to_s
           end
+
           subcommand(dashize(tag), "Run procedures tagged ##{tag} #{procedures}", klass)
+        end
+
+        def execute
+          puts help
+        end
+
+        def help
+          warn "WARNING: There were no tags found in procedures" if self.class.recognised_subcommands.empty?
+          super
         end
       end
     end
