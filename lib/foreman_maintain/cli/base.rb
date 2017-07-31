@@ -1,3 +1,5 @@
+require 'foreman_maintain/csv_parser'
+
 module ForemanMaintain
   module Cli
     class Base < Clamp::Command
@@ -53,6 +55,16 @@ module ForemanMaintain
         collection.inject([]) { |array, item| array.concat(item.tags).uniq }.sort_by(&:to_s)
       end
 
+      def self.option(switches, type, description, opts = {}, &block)
+        multivalued = opts.delete(:multivalued)
+        description += " (comma-separated list)" if multivalued
+        super(switches, type, description, opts) do |value|
+          value = CSVParser.new.parse(value) if multivalued
+          value = instance_exec(value, &block) if block
+          value
+        end
+      end
+
       def self.label_option
         option '--label', 'label',
                'Limit only for a specific label. ' \
@@ -63,11 +75,12 @@ module ForemanMaintain
       end
 
       def self.tags_option
-        option '--tags', 'tags',
+        option('--tags', 'tags',
                'Limit only for specific set of labels. ' \
-                 '(Use list-tags command to see available tags)' do |tags|
+                 '(Use list-tags command to see available tags)',
+               :multivalued => true) do |tags|
           raise ArgumentError, 'value not specified' if tags.nil? || tags.empty?
-          tags.split(',').map(&:strip).map { |tag| underscorize(tag).to_sym }
+          tags.map { |tag| underscorize(tag).to_sym }
         end
       end
 
