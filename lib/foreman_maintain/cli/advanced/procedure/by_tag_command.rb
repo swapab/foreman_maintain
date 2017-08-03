@@ -21,7 +21,9 @@ module ForemanMaintain
         end
 
         def help
-          warn "WARNING: There were no tags found in procedures" if self.class.recognised_subcommands.empty?
+          if self.class.recognised_subcommands.empty?
+            warn 'WARNING: There were no tags found in procedures'
+          end
           super
         end
       end

@@ -57,7 +57,7 @@ module ForemanMaintain
 
       def self.option(switches, type, description, opts = {}, &block)
         multivalued = opts.delete(:multivalued)
-        description += " (comma-separated list)" if multivalued
+        description += ' (comma-separated list)' if multivalued
         super(switches, type, description, opts) do |value|
           value = CSVParser.new.parse(value) if multivalued
           value = instance_exec(value, &block) if block

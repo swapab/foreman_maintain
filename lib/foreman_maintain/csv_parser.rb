@@ -1,6 +1,5 @@
 module ForemanMaintain
   class CSVParser
-
     def initialize
       reset_parser
     end
@@ -11,7 +10,9 @@ module ForemanMaintain
       data.each_char do |char|
         handle_escape(char) || handle_quoting(char) || handle_comma(char) || add_to_buffer(char)
       end
-      raise ArgumentError.new("Illegal quoting in %{buffer}" % { :buffer => @raw_buffer }) unless @last_quote.nil?
+      unless @last_quote.nil?
+        raise(ArgumentError, format('Illegal quoting in %s', @raw_buffer))
+      end
       clean_buffer
       @value
     end
