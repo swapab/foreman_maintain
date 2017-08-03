@@ -92,11 +92,6 @@ describe ForemanMaintain::Cli::TransformClampOptions do
         option = subject.param_to_option(definition.param_state)
         assert option.required?, '--state is expected to be required'
       end
-
-      it 'set multivalued flag' do
-        option = subject.param_to_option(definition.param_packages)
-        assert option.multivalued?, '--packages is expected to be multivalued'
-      end
     end
   end
 end
