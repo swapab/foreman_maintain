@@ -7,6 +7,8 @@ module ForemanMaintain
     module SystemHelpers
       include Logger
 
+      REDHAT_REPO_FILE = '/etc/yum.repos.d/redhat.repo'.freeze
+
       def self.included(klass)
         klass.extend(self)
       end
@@ -69,6 +71,18 @@ module ForemanMaintain
         result = execute(%(rpm -q '#{name}'))
         if $CHILD_STATUS.success?
           result
+        end
+      end
+
+      def repo_exists?(name)
+        if file_exists?(REDHAT_REPO_FILE)
+          result = execute(%(grep -r #{name} #{REDHAT_REPO_FILE}))
+        else
+          result = execute(%(subscription-manager repos | grep #{name}))
+        end
+
+        if $CHILD_STATUS.success?
+          result.to_s.size > 0
         end
       end
 
